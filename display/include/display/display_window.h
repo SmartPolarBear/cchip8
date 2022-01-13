@@ -4,7 +4,9 @@
 
 #pragma once
 
+
 #include <memory>
+#include <coroutine>
 
 #include <GLFW/glfw3.h>
 
@@ -13,7 +15,9 @@ namespace cchip8::display
 /// \brief Owner class for display window
 class display_window
 {
+
 public:
+
 	display_window(int32_t w, int32_t h, std::string_view title);
 
 	display_window(display_window&& another) noexcept:
@@ -41,6 +45,7 @@ public:
 	{
 		return window_;
 	}
+
 
 private:
 	GLFWwindow* window_{ nullptr };

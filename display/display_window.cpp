@@ -29,5 +29,7 @@ cchip8::display::display_window::display_window(int32_t w, int32_t h, std::strin
 
 cchip8::display::display_window::~display_window()
 {
+	glfwDestroyWindow(window_);
 	glfwTerminate();
 }
+
