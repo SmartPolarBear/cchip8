@@ -5,10 +5,10 @@
     <sourceRoots>
       <file path="$PROJECT_DIR$/libs" />
     </sourceRoots>
-    <libraryRoots>
+    <excludeRoots>
       <file path="$PROJECT_DIR$/libs/argparse" />
       <file path="$PROJECT_DIR$/libs/gsl" />
       <file path="$PROJECT_DIR$/libs/magic_enum" />
-    </libraryRoots>
+    </excludeRoots>
   </component>
 </project>

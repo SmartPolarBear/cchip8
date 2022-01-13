@@ -8,6 +8,9 @@ find_package(glm CONFIG REQUIRED)
 
 add_executable(cchip8 main.cpp)
 
+# 3rd party libraries
+add_subdirectory(libs)
+
 add_subdirectory(display)
 
 target_link_libraries(cchip8 PRIVATE glfw)
