@@ -4,7 +4,7 @@
 
 #pragma once
 
-
+#include <span>
 #include <memory>
 #include <coroutine>
 
@@ -58,6 +58,10 @@ public:
 	{
 		return window_.get();
 	}
+
+	void update(std::span<uint32_t> buf, int pitch);
+
+	[[nodiscard]] bool process_events(std::span<uint8_t> keys);
 
 
 private:
