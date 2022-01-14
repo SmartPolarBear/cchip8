@@ -16,7 +16,7 @@ cchip8::display::display_window::display_window(int32_t w,
 		uint32_t hscale,
 		std::string_view title)
 {
-	if (!SDL_Init(SDL_INIT_VIDEO))
+	if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO))
 	{
 		throw runtime_error{ SDL_GetError() };
 	}
