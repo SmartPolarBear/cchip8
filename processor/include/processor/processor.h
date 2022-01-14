@@ -5,6 +5,7 @@
 #pragma once
 
 #include <span>
+#include <random>
 #include <cstdint>
 
 namespace cchip8::processor
@@ -48,30 +49,20 @@ public:
 
 	static constexpr size_t FONTSET_SIZE = 80;
 
-	[[nodiscard]] inline uint16_t opcode() const
+	machine();
+
+	void cycle();
+
+	void load(std::string_view filename);
+
+private:
+	[[nodiscard]] inline constexpr uint16_t current_opcode() const
 	{
 		return opcode_view_[reg_pc_];
 	}
 
-	void cycle()
-	{
+	void dispatch_opcode();
 
-		// decrement timers
-
-		if (delay_timer_ > 0)
-		{
-			delay_timer_ -= 1;
-		}
-
-		if (sound_timer_ > 0)
-		{
-			sound_timer_ -= 1;
-		}
-
-		reg_pc_ += INSTRUCTION_SIZE;
-	}
-
-private:
 	// predefined data
 	static inline constexpr uint8_t fontset[FONTSET_SIZE] =
 			{
@@ -99,13 +90,16 @@ private:
 	uint8_t memory_[MEMORY_IN_BYTES]{};
 	uint8_t stack_[STACK_SIZE]{};
 
-	uint16_t reg_pc_{};
+	uint16_t reg_pc_{ START_ADDRESS };
 	uint16_t reg_i_{};
 
 	uint8_t delay_timer_{};
 	uint8_t sound_timer_{};
 
 	// for convenience
+
+	std::default_random_engine rand_gen_;
+	std::uniform_int_distribution<uint32_t> rand_byte_{ 0, UINT8_MAX };
 
 	std::span<uint16_t> opcode_view_{ reinterpret_cast<uint16_t*>(memory_), std::dynamic_extent };
 };
