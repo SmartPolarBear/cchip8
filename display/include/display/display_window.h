@@ -8,17 +8,30 @@
 #include <memory>
 #include <coroutine>
 
-#include <GLFW/glfw3.h>
+#include <SDL.h>
 
 namespace cchip8::display
 {
 /// \brief Owner class for display window
 class display_window
 {
-
 public:
+	using sdl_window_pointer = std::unique_ptr<SDL_Window, decltype([](SDL_Window* w)
+	{
+		SDL_DestroyWindow(w);
+	})>;
 
-	display_window(int32_t w, int32_t h, std::string_view title);
+	using sdl_texture_pointer = std::unique_ptr<SDL_Texture, decltype([](SDL_Texture* t)
+	{
+		SDL_DestroyTexture(t);
+	})>;
+
+	using sdl_renderer_pointer = std::unique_ptr<SDL_Renderer, decltype([](SDL_Renderer* r)
+	{
+		SDL_DestroyRenderer(r);
+	})>;
+public:
+	display_window(int32_t w, uint32_t wscale, int32_t h, uint32_t hscale, std::string_view title);
 
 	display_window(display_window&& another) noexcept:
 			window_(std::exchange(another.window_, nullptr))
@@ -33,7 +46,7 @@ public:
 
 	explicit operator bool() const
 	{
-		return window_;
+		return !(!window_);
 	}
 
 	bool operator!() const
@@ -41,13 +54,15 @@ public:
 		return !window_;
 	}
 
-	[[nodiscard]] GLFWwindow* get_window() const
+	[[nodiscard]] SDL_Window* get_window() const
 	{
-		return window_;
+		return window_.get();
 	}
 
 
 private:
-	GLFWwindow* window_{ nullptr };
+	sdl_window_pointer window_{ nullptr };
+	sdl_texture_pointer texture_{ nullptr };
+	sdl_renderer_pointer renderer_{ nullptr };
 };
 }

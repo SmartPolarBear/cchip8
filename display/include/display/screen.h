@@ -12,8 +12,8 @@ namespace cchip8::display
 class screen
 {
 public:
-	static constexpr WIDTH = 64;
-	static constexpr HEIGHT = 32;
+	static size_t constexpr WIDTH = 64;
+	static size_t constexpr HEIGHT = 32;
 
 private:
 	// 64x32 monochrome pixels are represented
