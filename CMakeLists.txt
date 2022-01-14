@@ -17,6 +17,7 @@ target_link_libraries(cchip8
 # supporting libraries
 add_subdirectory(base)
 
+add_subdirectory(processor)
 add_subdirectory(display)
 
 target_link_libraries(cchip8 PRIVATE SDL2::SDL2 SDL2::SDL2main)
