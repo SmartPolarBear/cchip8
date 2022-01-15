@@ -49,6 +49,8 @@ public:
 
 	static constexpr size_t FONTSET_SIZE = 80;
 
+	using opcode_handle_type = void (machine::*)();
+
 	machine();
 
 	void cycle();
@@ -61,10 +63,89 @@ private:
 		return opcode_view_[reg_pc_];
 	}
 
+	void op_00e0();
+
+	void op_00ee();
+
+	void op_1nnn();
+
+	void op_2nnn();
+
+	void op_3xkk();
+
+	void op_4xkk();
+
+	void op_5xy0();
+
+	void op_6xkk();
+
+	void op_7xkk();
+
+	void op_8xy0();
+
+	void op_8xy1();
+
+	void op_8xy2();
+
+	void op_8xy3();
+
+	void op_8xy4();
+
+	void op_8xy5();
+
+	void op_8xy6();
+
+	void op_8xy7();
+
+	void op_8xye();
+
+	void op_9xy0();
+
+	void op_annn();
+
+	void op_bnnn();
+
+	void op_cxkk();
+
+	void op_dxyn();
+
+	void op_exa1();
+
+	void op_ex9e();
+
+	void op_fx07();
+
+	void op_fx0a();
+
+	void op_fx15();
+
+	void op_fx18();
+
+	void op_fx1e();
+
+	void op_fx29();
+
+	void op_fx33();
+
+	void op_fx55();
+
+	void op_fx65();
+
+	void op_default();
+
+	void dispatch_opcode_0();
+
+	void dispatch_opcode_8();
+
+	void dispatch_opcode_e();
+
+	void dispatch_opcode_f();
+
 	void dispatch_opcode();
 
+
 	// predefined data
-	static inline constexpr uint8_t fontset[FONTSET_SIZE] =
+	static inline constexpr uint8_t FONTSET[FONTSET_SIZE] =
 			{
 					0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
 					0x20, 0x60, 0x20, 0x20, 0x70, // 1
@@ -83,6 +164,71 @@ private:
 					0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
 					0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 			};
+
+	static inline constexpr opcode_handle_type OP_MAIN[0xF + 1]
+			{
+					[0 ... 0xF]=&machine::op_default,
+
+					[0x0]=&machine::dispatch_opcode_0,
+					[0x1]=&machine::op_1nnn,
+					[0x2]=&machine::op_2nnn,
+					[0x3]=&machine::op_3xkk,
+					[0x4]=&machine::op_4xkk,
+					[0x5]=&machine::op_5xy0,
+					[0x6]=&machine::op_6xkk,
+					[0x7]=&machine::op_7xkk,
+					[0x8]=&machine::dispatch_opcode_8,
+					[0x9]=&machine::op_9xy0,
+					[0xA]=&machine::op_annn,
+					[0xB]=&machine::op_bnnn,
+					[0xC]=&machine::op_cxkk,
+					[0xD]=&machine::op_dxyn,
+					[0xE]=&machine::dispatch_opcode_e,
+					[0xF]=&machine::dispatch_opcode_f,
+			};
+
+
+	static inline constexpr opcode_handle_type OP_0[0xE+1]{
+			[0 ... 0xE]=&machine::op_default,
+
+			[0x0]=&machine::op_00e0,
+			[0xE]=&machine::op_00ee
+	};
+
+	static inline constexpr opcode_handle_type OP_8[0xE+1]{
+			[0 ... 0xE]=&machine::op_default,
+
+			[0x0]=&machine::op_8xy0,
+			[0x1]=&machine::op_8xy1,
+			[0x2]=&machine::op_8xy2,
+			[0x3]=&machine::op_8xy3,
+			[0x4]=&machine::op_8xy4,
+			[0x5]=&machine::op_8xy5,
+			[0x6]=&machine::op_8xy6,
+			[0x7]=&machine::op_8xy7,
+			[0xE]=&machine::op_8xye,
+	};
+
+	static inline constexpr opcode_handle_type OP_E[0xE+1]{
+			[0 ... 0xE]=&machine::op_default,
+
+			[0x1]=&machine::op_exa1,
+			[0xE]=&machine::op_ex9e,
+	};
+
+	static inline constexpr opcode_handle_type OP_F[0x65+1]{
+			[0 ... 0x65]=&machine::op_default,
+
+			[0x07] = &machine::op_fx07,
+			[0x0A] = &machine::op_fx0a,
+			[0x15] = &machine::op_fx15,
+			[0x18] = &machine::op_fx18,
+			[0x1E] = &machine::op_fx1e,
+			[0x29] = &machine::op_fx29,
+			[0x33] = &machine::op_fx33,
+			[0x55] = &machine::op_fx55,
+			[0x65] = &machine::op_fx65,
+	};
 
 	// according to CHIP8 specification
 	uint8_t registers_[REGS_COUNT]{};
