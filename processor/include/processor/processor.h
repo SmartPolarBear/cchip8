@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "display/screen.h"
+
 #include <span>
 #include <random>
 #include <cstdint>
@@ -44,6 +46,10 @@ public:
 	static constexpr size_t STACK_SIZE = 1024;
 
 	static constexpr size_t REGS_COUNT = 16;
+
+	static constexpr size_t KEY_COUNT = 16;
+
+	static constexpr size_t VMEM_SIZE = display::screen::WIDTH * display::screen::HEIGHT;
 
 	static constexpr size_t INSTRUCTION_SIZE = sizeof(uint8_t[2]);
 
@@ -216,7 +222,7 @@ private:
 			[0xE]=&machine::op_ex9e,
 	};
 
-	static inline constexpr opcode_handle_type OP_F[0x65+1]{
+	static inline constexpr opcode_handle_type OP_F[0x65 + 1]{
 			[0 ... 0x65]=&machine::op_default,
 
 			[0x07] = &machine::op_fx07,
@@ -234,10 +240,14 @@ private:
 	uint8_t registers_[REGS_COUNT]{};
 
 	uint8_t memory_[MEMORY_IN_BYTES]{};
+	uint32_t vmem_[VMEM_SIZE]{};
 	uint8_t stack_[STACK_SIZE]{};
+
+	uint8_t keypad_[KEY_COUNT]{};
 
 	uint16_t reg_pc_{ START_ADDRESS };
 	uint16_t reg_i_{};
+	uint16_t reg_sp_{};
 
 	uint8_t delay_timer_{};
 	uint8_t sound_timer_{};
