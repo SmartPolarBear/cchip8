@@ -20,3 +20,8 @@ uint32_t cchip8::display::screen::get_pixel(int x, int y)
 {
 	return 0;
 }
+
+std::span<uint32_t> cchip8::display::screen::pixels() const
+{
+	return pixels_;
+}

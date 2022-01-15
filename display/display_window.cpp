@@ -5,16 +5,13 @@
 #include <stdexcept>
 
 #include "display/display_window.h"
+#include "display/screen.h"
 
 using namespace std;
 
 using namespace cchip8::display;
 
-cchip8::display::display_window::display_window(int32_t w,
-		uint32_t wscale,
-		int32_t h,
-		uint32_t hscale,
-		std::string_view title)
+cchip8::display::display_window::display_window(uint32_t scale, std::string_view title)
 {
 	if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO))
 	{
@@ -23,7 +20,8 @@ cchip8::display::display_window::display_window(int32_t w,
 
 	// initialize the window
 	{
-		auto window = SDL_CreateWindow(title.data(), 0, 0, w * wscale, h * hscale, SDL_WINDOW_SHOWN);
+		auto window = SDL_CreateWindow(title.data(), 0, 0, screen::WIDTH * scale, screen::HEIGHT * scale,
+				SDL_WINDOW_SHOWN);
 		if (!window)
 		{
 			SDL_Quit();
@@ -46,7 +44,8 @@ cchip8::display::display_window::display_window(int32_t w,
 
 	// initialize the texture
 	{
-		auto texture = SDL_CreateTexture(renderer_.get(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, w, h);
+		auto texture = SDL_CreateTexture(renderer_.get(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING,
+				screen::WIDTH, screen::HEIGHT);
 		if (!texture)
 		{
 			SDL_Quit();
@@ -63,9 +62,9 @@ cchip8::display::display_window::~display_window()
 	SDL_Quit();
 }
 
-void display_window::update(std::span<uint32_t> buf, int pitch)
+void display_window::update(const screen& scr)
 {
-	if (!SDL_UpdateTexture(texture_.get(), nullptr, buf.data(), pitch))
+	if (!SDL_UpdateTexture(texture_.get(), nullptr, scr.pixels().data(), screen::PITCH))
 	{
 		throw runtime_error{ SDL_GetError() };
 	}

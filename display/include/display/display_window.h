@@ -10,6 +10,8 @@
 
 #include <SDL.h>
 
+#include "display/screen.h"
+
 namespace cchip8::display
 {
 /// \brief Owner class for display window
@@ -31,7 +33,7 @@ public:
 		SDL_DestroyRenderer(r);
 	})>;
 public:
-	display_window(int32_t w, uint32_t wscale, int32_t h, uint32_t hscale, std::string_view title);
+	display_window(uint32_t scale, std::string_view title);
 
 	display_window(display_window&& another) noexcept:
 			window_(std::exchange(another.window_, nullptr))
@@ -59,7 +61,7 @@ public:
 		return window_.get();
 	}
 
-	void update(std::span<uint32_t> buf, int pitch);
+	void update(const screen &scr);
 
 	[[nodiscard]] bool process_events(std::span<uint8_t> keys);
 
