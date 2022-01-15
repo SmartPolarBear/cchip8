@@ -379,59 +379,150 @@ void machine::op_dxyn()
 	}
 }
 
+// exa1 skip if the key in reg[x] is not pressed
 void machine::op_exa1()
 {
+	auto opcode = current_opcode();
 
+	auto reg1 = ((opcode & 0x0F00) >> 8);
+
+	if (!keypad_[registers_[reg1]])
+	{
+		reg_pc_ += INSTRUCTION_SIZE;
+	}
 }
 
+// ex9e skip if the key in reg[x] is pressed
 void machine::op_ex9e()
 {
+	auto opcode = current_opcode();
 
+	auto reg1 = ((opcode & 0x0F00) >> 8);
+
+	if (keypad_[registers_[reg1]])
+	{
+		reg_pc_ += INSTRUCTION_SIZE;
+	}
 }
 
+// fx07 set reg[x]=delay timer
 void machine::op_fx07()
 {
+	auto opcode = current_opcode();
 
+	auto reg1 = ((opcode & 0x0F00) >> 8);
+
+	registers_[reg1] = delay_timer_;
 }
 
+// fx0a: blocking getting
 void machine::op_fx0a()
 {
+	auto opcode = current_opcode();
 
+	auto reg1 = ((opcode & 0x0F00) >> 8);
+
+	bool set = false;
+	for (int i = 0; i < KEY_COUNT; i++)
+	{
+		if (keypad_[i])
+		{
+			registers_[reg1] = i;
+			set = true;
+		}
+	}
+
+	if (!set)
+	{
+		reg_pc_ -= INSTRUCTION_SIZE;// loop
+	}
 }
 
+// fx15: set delay timer=reg[x]
 void machine::op_fx15()
 {
+	auto opcode = current_opcode();
 
+	auto reg1 = ((opcode & 0x0F00) >> 8);
+
+	delay_timer_ = registers_[reg1];
 }
 
+// fx18: set sound timer=reg[x]
 void machine::op_fx18()
 {
+	auto opcode = current_opcode();
 
+	auto reg1 = ((opcode & 0x0F00) >> 8);
+
+	sound_timer_ = registers_[reg1];
 }
 
+// fx1e: add reg[x] to index.
 void machine::op_fx1e()
 {
+	auto opcode = current_opcode();
 
+	auto reg1 = ((opcode & 0x0F00) >> 8);
+
+	reg_i_ += registers_[reg1];
 }
 
+// fx29:set index to the char in reg[x]
 void machine::op_fx29()
 {
+	auto opcode = current_opcode();
 
+	auto reg1 = ((opcode & 0x0F00) >> 8);
+
+	reg_i_ = FONTSET_ADDRESS + (5 * registers_[reg1]);
 }
 
+// fx33: convert reg[x] to three decimal digits in memory[reg_i]
 void machine::op_fx33()
 {
+	auto opcode = current_opcode();
 
+	auto reg1 = ((opcode & 0x0F00) >> 8);
+
+	auto value = registers_[reg1];
+
+	// Ones-place
+	memory_[reg_i_ + 2] = value % 10;
+	value /= 10;
+
+	// Tens-place
+	memory_[reg_i_ + 1] = value % 10;
+	value /= 10;
+
+	// Hundreds-place
+	memory_[reg_i_] = value % 10;
 }
 
+// fx55 load v0 to vx in memory[reg_i]
 void machine::op_fx55()
 {
+	auto opcode = current_opcode();
 
+	auto reg1 = ((opcode & 0x0F00) >> 8);
+
+	for (int i = 0; i < reg1; i++)
+	{
+		memory_[reg_i_ + i] = registers_[i];
+	}
 }
 
+// fx55 load memory[reg_i] to v0 to vx
 void machine::op_fx65()
 {
+	auto opcode = current_opcode();
 
+	auto reg1 = ((opcode & 0x0F00) >> 8);
+
+	for (int i = 0; i < reg1; i++)
+	{
+		registers_[i] = memory_[reg_i_ + i];
+	}
 }
 
 
