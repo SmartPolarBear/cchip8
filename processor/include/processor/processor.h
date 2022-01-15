@@ -63,6 +63,10 @@ public:
 
 	void load(std::string_view filename);
 
+	std::span<uint8_t > keypad()const;
+
+	display::screen& screen()const;
+
 private:
 	[[nodiscard]] inline constexpr uint16_t current_opcode() const
 	{
@@ -150,6 +154,10 @@ private:
 	void dispatch_opcode();
 
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wc99-designator"
+#pragma clang diagnostic ignored "-Winitializer-overrides"
+
 	// predefined data
 	static inline constexpr uint8_t FONTSET[FONTSET_SIZE] =
 			{
@@ -235,7 +243,7 @@ private:
 			[0x55] = &machine::op_fx55,
 			[0x65] = &machine::op_fx65,
 	};
-
+#pragma clang diagnostic pop
 	// according to CHIP8 specification
 	uint8_t registers_[REGS_COUNT]{};
 
@@ -243,7 +251,7 @@ private:
 	uint32_t vmem_[VMEM_SIZE]{};
 	uint8_t stack_[STACK_SIZE]{};
 
-	uint8_t keypad_[KEY_COUNT]{};
+	mutable uint8_t keypad_[KEY_COUNT]{};
 
 	uint16_t reg_pc_{ START_ADDRESS };
 	uint16_t reg_i_{};
@@ -253,6 +261,8 @@ private:
 	uint8_t sound_timer_{};
 
 	// for convenience
+
+	mutable display::screen screen_{ vmem_ };
 
 	std::default_random_engine rand_gen_;
 	std::uniform_int_distribution<uint32_t> rand_byte_{ 0, UINT8_MAX };

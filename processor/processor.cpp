@@ -368,13 +368,17 @@ void machine::op_dxyn()
 			if (r + y >= display::screen::HEIGHT || (c + x) >= display::screen::WIDTH)continue;
 
 			auto pixel = byte & (0b1000'0000 >> c);
-			auto screen_pixel = &vmem_[(r + y) * display::screen::WIDTH + (c + x)];
-
-			if (*screen_pixel == 0xFFFF'FFFF)
+			if (pixel)
 			{
-				registers_[VF] = 1;
+				registers_[VF] = screen_.toggle_pixel(c + x, r + y);
+//				auto screen_pixel = &vmem_[(r + y) * display::screen::WIDTH + (c + x)];
+//
+//				if (*screen_pixel == 0xFFFF'FFFF)
+//				{
+//					registers_[VF] = 1;
+//				}
+//				*screen_pixel ^= 0xFFFF'FFFF;
 			}
-			*screen_pixel ^= 0xFFFF'FFFF;
 		}
 	}
 }
@@ -523,6 +527,16 @@ void machine::op_fx65()
 	{
 		registers_[i] = memory_[reg_i_ + i];
 	}
+}
+
+std::span<uint8_t> machine::keypad() const
+{
+	return { keypad_ };
+}
+
+cchip8::display::screen& machine::screen() const
+{
+	return screen_;
 }
 
 
