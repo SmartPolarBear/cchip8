@@ -8,6 +8,7 @@
 #include <gsl/gsl>
 
 #include "processor/processor.h"
+#include "sound/beeper.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -15,6 +16,7 @@ using namespace std::chrono;
 using namespace gsl;
 
 using namespace cchip8::processor;
+using namespace cchip8::sound;
 
 machine::machine()
 		: reg_pc_(START_ADDRESS),
@@ -45,8 +47,11 @@ void machine::cycle()
 
 	if (sound_timer_ > 0)
 	{
-		// TODO: go off a beep
 		sound_timer_ -= 1;
+
+		beeper b{};
+		b.beep(TIMER_BEEP, BEEP_DURATION);
+		b.wait();
 	}
 }
 
@@ -105,8 +110,8 @@ void machine::load(std::string_view filename)
 
 void machine::op_default()
 {
-	// TODO: logging and/or sounding
-	int fuck = 0;
+	beeper b{};
+	b.beep(ERROR_BEEP, BEEP_DURATION);
 }
 
 // 00e0: clear the screen

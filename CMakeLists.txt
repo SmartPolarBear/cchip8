@@ -19,6 +19,7 @@ add_subdirectory(base)
 
 add_subdirectory(processor)
 add_subdirectory(display)
+add_subdirectory(sound)
 
 target_link_libraries(cchip8 PRIVATE SDL2::SDL2 SDL2::SDL2main)
 # use custom entry point

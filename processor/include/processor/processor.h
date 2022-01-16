@@ -21,6 +21,14 @@ public:
 		START_ADDRESS = 0x200,
 	};
 
+	enum audio_frequencies
+	{
+		TIMER_BEEP = 440,
+		ERROR_BEEP = 350,
+	};
+
+	static constexpr size_t BEEP_DURATION = 20;
+
 	enum general_purpose_registers
 	{
 		V0,
