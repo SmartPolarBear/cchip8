@@ -21,8 +21,17 @@ machine::machine()
 {
 }
 
+void machine::fetch_and_add()
+{
+
+	opcode_ = (memory_[reg_pc_] << 8u) | memory_[reg_pc_ + 1];
+	reg_pc_ += INSTRUCTION_SIZE;
+}
+
 void machine::cycle()
 {
+	fetch_and_add();
+
 	dispatch_opcode();
 
 	// decrement timers
@@ -37,8 +46,6 @@ void machine::cycle()
 		// TODO: go off a beep
 		sound_timer_ -= 1;
 	}
-
-	reg_pc_ += INSTRUCTION_SIZE;
 }
 
 
@@ -322,7 +329,7 @@ void machine::op_annn()
 {
 	const auto opcode = current_opcode();
 
-	const auto val = (opcode & 0x0fFF);
+	const auto val = (opcode & 0x0FFFu);
 	reg_i_ = val;
 }
 
@@ -366,19 +373,10 @@ void machine::op_dxyn()
 		auto byte = memory_[reg_i_ + r];
 		for (auto c = 0; c < 8; c++)
 		{
-			if (r + y >= display::screen::HEIGHT || (c + x) >= display::screen::WIDTH)continue;
-
 			auto pixel = byte & (0b1000'0000 >> c);
 			if (pixel)
 			{
 				registers_[VF] = screen_.toggle_pixel(c + x, r + y);
-//				auto screen_pixel = &vmem_[(r + y) * display::screen::WIDTH + (c + x)];
-//
-//				if (*screen_pixel == 0xFFFF'FFFF)
-//				{
-//					registers_[VF] = 1;
-//				}
-//				*screen_pixel ^= 0xFFFF'FFFF;
 			}
 		}
 	}
@@ -539,5 +537,6 @@ cchip8::display::screen& machine::screen() const
 {
 	return screen_;
 }
+
 
 

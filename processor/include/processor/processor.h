@@ -70,8 +70,10 @@ public:
 private:
 	[[nodiscard]] inline constexpr uint16_t current_opcode() const
 	{
-		return (memory_[reg_pc_] << 8u) | memory_[reg_pc_ + 1];
+		return opcode_;
 	}
+
+	void fetch_and_add();
 
 	void op_00e0();
 
@@ -261,6 +263,8 @@ private:
 	uint8_t sound_timer_{};
 
 	// for convenience
+
+	uint16_t opcode_{};
 
 	mutable display::screen screen_{ vmem_ };
 
