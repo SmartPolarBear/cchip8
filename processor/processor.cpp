@@ -90,13 +90,14 @@ void machine::load(std::string_view filename)
 		rom.seekg(0, ios::beg);
 		rom.read(buf.get(), size);
 
-		memmove(memory_, buf.get(), size);
+		memmove(memory_ + START_ADDRESS, buf.get(), size);
 	}
 }
 
 void machine::op_default()
 {
 	// TODO: logging and/or sounding
+	int fuck = 0;
 }
 
 // 00e0: clear the screen

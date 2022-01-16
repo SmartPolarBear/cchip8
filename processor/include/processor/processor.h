@@ -63,14 +63,14 @@ public:
 
 	void load(std::string_view filename);
 
-	std::span<uint8_t > keypad()const;
+	std::span<uint8_t> keypad() const;
 
-	display::screen& screen()const;
+	display::screen& screen() const;
 
 private:
 	[[nodiscard]] inline constexpr uint16_t current_opcode() const
 	{
-		return opcode_view_[reg_pc_];
+		return (memory_[reg_pc_] << 8u) | memory_[reg_pc_ + 1];
 	}
 
 	void op_00e0();
@@ -267,6 +267,5 @@ private:
 	std::default_random_engine rand_gen_;
 	std::uniform_int_distribution<uint32_t> rand_byte_{ 0, UINT8_MAX };
 
-	std::span<uint16_t> opcode_view_{ reinterpret_cast<uint16_t*>(memory_), std::dynamic_extent };
 };
 }

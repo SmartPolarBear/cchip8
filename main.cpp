@@ -59,8 +59,8 @@ int main(int argc, char** argv)
 
 	arg_parser.add_argument("-cd", "--cycle-delay")
 			.help("Delay per cycle.")
-			.default_value(3)
-			.implicit_value(3);
+			.default_value(1)
+			.implicit_value(1);
 
 	try
 	{
