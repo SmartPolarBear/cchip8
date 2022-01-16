@@ -14,9 +14,9 @@ using namespace cchip8::processor;
 void run_emulator(argparse::ArgumentParser& arg_parser)
 {
 	const auto rom = arg_parser.get<string>("--rom");
-	const auto vs = arg_parser.get<uint32_t>("--video-scale"), cd = arg_parser.get<uint32_t>("--cycle-delay");
+	const auto vs = arg_parser.get<int>("--video-scale"), cd = arg_parser.get<int>("--cycle-delay");
 
-	display_window win{ vs, "CHIP8" };
+	display_window win{ static_cast<uint32_t>(vs), "CHIP8" };
 
 	machine emulator{};
 

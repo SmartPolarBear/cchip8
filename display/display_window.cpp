@@ -13,14 +13,16 @@ using namespace cchip8::display;
 
 cchip8::display::display_window::display_window(uint32_t scale, std::string_view title)
 {
-	if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO))
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
 	{
+		auto e = SDL_GetError();
 		throw runtime_error{ SDL_GetError() };
 	}
 
 	// initialize the window
 	{
-		auto window = SDL_CreateWindow(title.data(), 0, 0, screen::WIDTH * scale, screen::HEIGHT * scale,
+		auto window = SDL_CreateWindow(title.data(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+				screen::WIDTH * scale, screen::HEIGHT * scale,
 				SDL_WINDOW_SHOWN);
 		if (!window)
 		{
@@ -59,22 +61,26 @@ cchip8::display::display_window::display_window(uint32_t scale, std::string_view
 
 cchip8::display::display_window::~display_window()
 {
+	texture_.release();
+	renderer_.release();
+	window_.release();
+	
 	SDL_Quit();
 }
 
 void display_window::update(const screen& scr)
 {
-	if (!SDL_UpdateTexture(texture_.get(), nullptr, scr.pixels().data(), screen::PITCH))
+	if (SDL_UpdateTexture(texture_.get(), nullptr, scr.pixels().data(), screen::PITCH) < 0)
 	{
 		throw runtime_error{ SDL_GetError() };
 	}
 
-	if (!SDL_RenderClear(renderer_.get()))
+	if (SDL_RenderClear(renderer_.get()) < 0)
 	{
 		throw runtime_error{ SDL_GetError() };
 	}
 
-	if (!SDL_RenderCopy(renderer_.get(), texture_.get(), nullptr, nullptr))
+	if (SDL_RenderCopy(renderer_.get(), texture_.get(), nullptr, nullptr) < 0)
 	{
 		throw runtime_error{ SDL_GetError() };
 	}
