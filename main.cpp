@@ -48,19 +48,18 @@ int main(int argc, char** argv)
 
 	arg_parser.add_argument("-r", "--rom")
 			.help("the CHIP8 ROM file")
-			.default_value(string{ "" })
-			.implicit_value(string{ "" })
+			.required()
 			.nargs(1);
 
 	arg_parser.add_argument("-vs", "--video-scale")
 			.help("Video scale.")
 			.default_value(10)
-			.implicit_value(10);
+			.scan<'i', int>();
 
 	arg_parser.add_argument("-cd", "--cycle-delay")
 			.help("Delay per cycle.")
 			.default_value(1)
-			.implicit_value(1);
+			.scan<'i', int>();
 
 	try
 	{
