@@ -17,13 +17,15 @@ using namespace gsl;
 using namespace cchip8::processor;
 
 machine::machine()
-		: rand_gen_(system_clock::now().time_since_epoch().count())
+		: reg_pc_(START_ADDRESS),
+		  rand_gen_(system_clock::now().time_since_epoch().count()),
+		  rand_byte_(0, 255U)
 {
+	memcpy(memory_ + FONTSET_ADDRESS, FONTSET, sizeof(FONTSET));
 }
 
 void machine::fetch_and_add()
 {
-
 	opcode_ = (memory_[reg_pc_] << 8u) | memory_[reg_pc_ + 1];
 	reg_pc_ += INSTRUCTION_SIZE;
 }
@@ -133,10 +135,10 @@ void machine::op_1nnn()
 void machine::op_2nnn()
 {
 	const auto opcode = current_opcode();
-
-	stack_[reg_sp_++] = reg_pc_;
-
 	const auto addr = opcode & 0x0FFFu;
+
+	stack_[reg_sp_] = reg_pc_;
+	reg_sp_++;
 	reg_pc_ = addr;
 }
 
