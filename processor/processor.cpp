@@ -118,8 +118,7 @@ void machine::op_00e0()
 // 00ee: return from subroutine
 void machine::op_00ee()
 {
-	reg_sp_--;
-	reg_pc_ = stack_[reg_sp_];
+	reg_pc_ = stack_[--reg_sp_];
 }
 
 // 1nnn jump to nnn
@@ -137,8 +136,7 @@ void machine::op_2nnn()
 	const auto opcode = current_opcode();
 	const auto addr = opcode & 0x0FFFu;
 
-	stack_[reg_sp_] = reg_pc_;
-	reg_sp_++;
+	stack_[reg_sp_++] = reg_pc_;
 	reg_pc_ = addr;
 }
 
@@ -147,8 +145,8 @@ void machine::op_3xkk()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg_num = ((opcode & 0x0F00) >> 8);
-	const auto val = (opcode & 0x00FF);
+	const auto reg_num = ((opcode & 0x0F00u) >> 8u);
+	const auto val = (opcode & 0x00FFu);
 
 	if (registers_[reg_num] == val)
 	{
@@ -161,8 +159,8 @@ void machine::op_4xkk()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg_num = ((opcode & 0x0F00) >> 8);
-	const auto val = (opcode & 0x00FF);
+	const auto reg_num = ((opcode & 0x0F00u) >> 8u);
+	const auto val = (opcode & 0x00FFu);
 
 	if (registers_[reg_num] != val)
 	{
@@ -175,8 +173,8 @@ void machine::op_5xy0()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg1 = ((opcode & 0x0F00) >> 8);
-	const auto reg2 = ((opcode & 0x00F0) >> 4);
+	const auto reg1 = ((opcode & 0x0F00u) >> 8u);
+	const auto reg2 = ((opcode & 0x00F0u) >> 4u);
 
 	if (registers_[reg1] == registers_[reg2])
 	{
@@ -189,8 +187,8 @@ void machine::op_6xkk()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg_num = ((opcode & 0x0F00) >> 8);
-	const auto val = (opcode & 0x00FF);
+	const auto reg_num = ((opcode & 0x0F00u) >> 8u);
+	const auto val = (opcode & 0x00FFu);
 
 	registers_[reg_num] = val;
 }
@@ -200,8 +198,8 @@ void machine::op_7xkk()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg_num = ((opcode & 0x0F00) >> 8);
-	const auto val = (opcode & 0x00FF);
+	const auto reg_num = ((opcode & 0x0F00u) >> 8u);
+	const auto val = (opcode & 0x00FFu);
 
 	registers_[reg_num] += val;
 }
@@ -211,8 +209,8 @@ void machine::op_8xy0()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg1 = ((opcode & 0x0F00) >> 8);
-	const auto reg2 = ((opcode & 0x00F0) >> 4);
+	const auto reg1 = ((opcode & 0x0F00u) >> 8u);
+	const auto reg2 = ((opcode & 0x00F0u) >> 4u);
 
 	registers_[reg1] = registers_[reg2];
 }
@@ -222,8 +220,8 @@ void machine::op_8xy1()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg1 = ((opcode & 0x0F00) >> 8);
-	const auto reg2 = ((opcode & 0x00F0) >> 4);
+	const auto reg1 = ((opcode & 0x0F00u) >> 8u);
+	const auto reg2 = ((opcode & 0x00F0u) >> 4u);
 
 	registers_[reg1] |= registers_[reg2];
 }
@@ -233,8 +231,8 @@ void machine::op_8xy2()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg1 = ((opcode & 0x0F00) >> 8);
-	const auto reg2 = ((opcode & 0x00F0) >> 4);
+	const auto reg1 = ((opcode & 0x0F00u) >> 8u);
+	const auto reg2 = ((opcode & 0x00F0u) >> 4u);
 
 	registers_[reg1] &= registers_[reg2];
 }
@@ -244,8 +242,8 @@ void machine::op_8xy3()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg1 = ((opcode & 0x0F00) >> 8);
-	const auto reg2 = ((opcode & 0x00F0) >> 4);
+	const auto reg1 = ((opcode & 0x0F00u) >> 8u);
+	const auto reg2 = ((opcode & 0x00F0u) >> 4u);
 
 	registers_[reg1] ^= registers_[reg2];
 }
@@ -255,8 +253,8 @@ void machine::op_8xy4()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg1 = ((opcode & 0x0F00) >> 8);
-	const auto reg2 = ((opcode & 0x00F0) >> 4);
+	const auto reg1 = ((opcode & 0x0F00u) >> 8u);
+	const auto reg2 = ((opcode & 0x00F0u) >> 4u);
 
 	uint32_t result = registers_[reg1] + registers_[reg2];
 
@@ -269,8 +267,8 @@ void machine::op_8xy5()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg1 = ((opcode & 0x0F00) >> 8);
-	const auto reg2 = ((opcode & 0x00F0) >> 4);
+	const auto reg1 = ((opcode & 0x0F00u) >> 8u);
+	const auto reg2 = ((opcode & 0x00F0u) >> 4u);
 
 
 	registers_[VF] = registers_[reg1] > registers_[reg2];
@@ -282,8 +280,8 @@ void machine::op_8xy6()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg1 = ((opcode & 0x0F00) >> 8);
-	[[maybe_unused]] const auto reg2 = ((opcode & 0x00F0) >> 4);
+	const auto reg1 = ((opcode & 0x0F00u) >> 8u);
+	[[maybe_unused]] const auto reg2 = ((opcode & 0x00F0u) >> 4u);
 
 	registers_[VF] = (registers_[reg1] & 0x1u);
 	registers_[reg1] >>= 1;
@@ -294,8 +292,8 @@ void machine::op_8xy7()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg1 = ((opcode & 0x0F00) >> 8);
-	const auto reg2 = ((opcode & 0x00F0) >> 4);
+	const auto reg1 = ((opcode & 0x0F00u) >> 8u);
+	const auto reg2 = ((opcode & 0x00F0u) >> 4u);
 
 	registers_[VF] = registers_[reg2] > registers_[reg1];
 	registers_[reg1] = registers_[reg2] - registers_[reg1];
@@ -306,8 +304,8 @@ void machine::op_8xye()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg1 = ((opcode & 0x0F00) >> 8);
-	[[maybe_unused]] const auto reg2 = ((opcode & 0x00F0) >> 4);
+	const auto reg1 = ((opcode & 0x0F00u) >> 8u);
+	[[maybe_unused]] const auto reg2 = ((opcode & 0x00F0u) >> 4u);
 
 	registers_[VF] = (registers_[reg1] & 0b1000'0000u);
 	registers_[reg1] <<= 1;
@@ -317,8 +315,8 @@ void machine::op_9xy0()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg1 = ((opcode & 0x0F00) >> 8);
-	const auto reg2 = ((opcode & 0x00F0) >> 4);
+	const auto reg1 = ((opcode & 0x0F00u) >> 8u);
+	const auto reg2 = ((opcode & 0x00F0u) >> 4u);
 
 	if (registers_[reg1] != registers_[reg2])
 	{
@@ -349,8 +347,8 @@ void machine::op_cxkk()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg_num = ((opcode & 0x0F00) >> 8);
-	const auto val = (opcode & 0x00FF);
+	const auto reg_num = ((opcode & 0x0F00u) >> 8u);
+	const auto val = (opcode & 0x00FFu);
 
 	registers_[reg_num] = rand_byte_(rand_gen_) & val;
 }
@@ -360,13 +358,13 @@ void machine::op_dxyn()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg1 = ((opcode & 0x0F00) >> 8);
-	const auto reg2 = ((opcode & 0x00F0) >> 4);
+	const auto reg1 = ((opcode & 0x0F00u) >> 8u);
+	const auto reg2 = ((opcode & 0x00F0u) >> 4u);
 
-	const auto height = (opcode & 0x000F);
+	const auto height = (opcode & 0x000Fu);
 
-	const auto x = registers_[reg1] & 0x3F, // less than 63,
-	y = registers_[reg2] & 0x1F; // less than 31
+	const auto x = registers_[reg1] & 0x3Fu, // less than 63,
+	y = registers_[reg2] & 0x1Fu; // less than 31
 
 	registers_[VF] = 0;
 
@@ -375,7 +373,7 @@ void machine::op_dxyn()
 		auto byte = memory_[reg_i_ + r];
 		for (auto c = 0; c < 8; c++)
 		{
-			auto pixel = byte & (0b1000'0000 >> c);
+			auto pixel = byte & (0b1000'0000u >> c);
 			if (pixel)
 			{
 				registers_[VF] = screen_.toggle_pixel(c + x, r + y);
@@ -389,7 +387,7 @@ void machine::op_exa1()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg1 = ((opcode & 0x0F00) >> 8);
+	const auto reg1 = ((opcode & 0x0F00u) >> 8u);
 
 	if (!keypad_[registers_[reg1]])
 	{
@@ -402,7 +400,7 @@ void machine::op_ex9e()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg1 = ((opcode & 0x0F00) >> 8);
+	const auto reg1 = ((opcode & 0x0F00u) >> 8u);
 
 	if (keypad_[registers_[reg1]])
 	{
@@ -415,7 +413,7 @@ void machine::op_fx07()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg1 = ((opcode & 0x0F00) >> 8);
+	const auto reg1 = ((opcode & 0x0F00u) >> 8u);
 
 	registers_[reg1] = delay_timer_;
 }
@@ -425,7 +423,7 @@ void machine::op_fx0a()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg1 = ((opcode & 0x0F00) >> 8);
+	const auto reg1 = ((opcode & 0x0F00u) >> 8u);
 
 	bool set = false;
 	for (int i = 0; i < KEY_COUNT; i++)
@@ -448,7 +446,7 @@ void machine::op_fx15()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg1 = ((opcode & 0x0F00) >> 8);
+	const auto reg1 = ((opcode & 0x0F00u) >> 8u);
 
 	delay_timer_ = registers_[reg1];
 }
@@ -458,7 +456,7 @@ void machine::op_fx18()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg1 = ((opcode & 0x0F00) >> 8);
+	const auto reg1 = ((opcode & 0x0F00u) >> 8u);
 
 	sound_timer_ = registers_[reg1];
 }
@@ -468,7 +466,7 @@ void machine::op_fx1e()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg1 = ((opcode & 0x0F00) >> 8);
+	const auto reg1 = ((opcode & 0x0F00u) >> 8u);
 
 	reg_i_ += registers_[reg1];
 }
@@ -478,7 +476,7 @@ void machine::op_fx29()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg1 = ((opcode & 0x0F00) >> 8);
+	const auto reg1 = ((opcode & 0x0F00u) >> 8u);
 
 	reg_i_ = FONTSET_ADDRESS + (5 * registers_[reg1]);
 }
@@ -488,7 +486,7 @@ void machine::op_fx33()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg1 = ((opcode & 0x0F00) >> 8);
+	const auto reg1 = ((opcode & 0x0F00u) >> 8u);
 
 	auto value = registers_[reg1];
 
@@ -509,7 +507,7 @@ void machine::op_fx55()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg1 = ((opcode & 0x0F00) >> 8);
+	const auto reg1 = ((opcode & 0x0F00u) >> 8u);
 
 	for (int i = 0; i < reg1; i++)
 	{
@@ -522,7 +520,7 @@ void machine::op_fx65()
 {
 	const auto opcode = current_opcode();
 
-	const auto reg1 = ((opcode & 0x0F00) >> 8);
+	const auto reg1 = ((opcode & 0x0F00u) >> 8u);
 
 	for (int i = 0; i < reg1; i++)
 	{

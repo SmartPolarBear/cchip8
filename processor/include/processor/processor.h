@@ -15,7 +15,7 @@ namespace cchip8::processor
 class machine
 {
 public:
-	enum predefined_addresses : uint32_t
+	enum predefined_addresses : uint16_t
 	{
 		FONTSET_ADDRESS = 0x50,
 		START_ADDRESS = 0x200,
@@ -251,7 +251,7 @@ private:
 
 	uint8_t memory_[MEMORY_IN_BYTES]{};
 	uint32_t vmem_[VMEM_SIZE]{};
-	uint8_t stack_[STACK_SIZE]{};
+	uint16_t stack_[STACK_SIZE]{};
 
 	mutable uint8_t keypad_[KEY_COUNT]{};
 
